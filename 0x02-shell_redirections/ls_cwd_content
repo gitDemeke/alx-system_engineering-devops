@@ -1,0 +1,34 @@
+total 128
+drwxrwxr-x  2 demeke demeke 4096 ሴፕቴ  5 06:36 .
+drwxrwxr-x 31 demeke demeke 4096 ሴፕቴ  3 09:10 ..
+-rwxr-xr-x  1 demeke demeke   32 ሴፕቴ  1 21:44 0-hello_world
+-rwxr-xr-x  1 demeke demeke   41 ሴፕቴ  1 22:05 100-empty_casks
+-rwxr-xr-x  1 demeke demeke  118 ሴፕቴ  1 22:06 101-gifs
+-rwxr-xr-x  1 demeke demeke   40 ሴፕቴ  1 22:06 102-acrostic
+-rwxr-xr-x  1 demeke demeke  103 ሴፕቴ  1 22:06 103-the_biggest_fan
+-rwxr-xr-x  1 demeke demeke   48 ሴፕቴ  1 21:59 10-no_more_js
+-rwxr-xr-x  1 demeke demeke   37 ሴፕቴ  1 21:59 11-directories
+-rwxr-xr-x  1 demeke demeke   30 ሴፕቴ  1 22:00 12-newest_files
+-rwxr-xr-x  1 demeke demeke   27 ሴፕቴ  1 22:00 13-unique
+-rwxr-xr-x  1 demeke demeke   34 ሴፕቴ  1 22:01 14-findthatword
+-rwxr-xr-x  1 demeke demeke   41 ሴፕቴ  1 22:01 15-countthatword
+-rwxr-xr-x  1 demeke demeke   38 ሴፕቴ  1 22:01 16-whatsnext
+-rwxr-xr-x  1 demeke demeke   36 ሴፕቴ  1 22:02 17-hidethisword
+-rwxr-xr-x  1 demeke demeke   48 ሴፕቴ  1 22:02 18-letteronly
+-rwxr-xr-x  1 demeke demeke   28 ሴፕቴ  1 22:02 19-AZ
+-rwxr-xr-x  1 demeke demeke   29 ሴፕቴ  1 21:45 1-confused_smiley
+-rwxr-xr-x  1 demeke demeke   21 ሴፕቴ  1 22:03 20-hiago
+-rwxr-xr-x  1 demeke demeke   16 ሴፕቴ  1 22:04 21-reverse
+-rwxr-xr-x  1 demeke demeke   45 ሴፕቴ  1 22:04 22-users_and_homes
+-rwxr-xr-x  1 demeke demeke   28 ሴፕቴ  1 14:34 2-hellofile
+-rwxr-xr-x  1 demeke demeke   39 ሴፕቴ  1 14:34 3-twofiles
+-rwxr-xr-x  1 demeke demeke   33 ሴፕቴ  1 21:48 4-lastlines
+-rwxr-xr-x  1 demeke demeke   33 ሴፕቴ  1 21:50 5-firstlines
+-rwxr-xr-x  1 demeke demeke   36 ሴፕቴ  1 21:51 6-third_line
+-rwxr-xr-x  1 demeke demeke   89 ሴፕቴ  1 21:52 7-file
+-rwxr-xr-x  1 demeke demeke   42 ሴፕቴ  1 21:55 8-cwd_state
+-rwxr-xr-x  1 demeke demeke   41 ሴፕቴ  1 21:58 9-duplicate_last_line
+-rw-rw-r--  1 demeke demeke  801 ሴፕቴ  5 06:36 iacta
+-rw-rw-r--  1 demeke demeke    0 ሴፕቴ  5 06:40 ls_cwd_content
+-rw-rw-r--  1 demeke demeke   20 ሴፕቴ  5 06:38 \*\\'"My School"\'\\*$\?\*\*\*\*\*:)
+-rw-rw-r--  1 demeke demeke   45 ሴፕቴ  1 14:36 README.md
