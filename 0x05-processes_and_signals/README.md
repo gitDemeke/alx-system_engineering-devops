@@ -1,1 +1,1 @@
-Practicing system programing in linux at alx
+This alx shell scripting assignment and projects
