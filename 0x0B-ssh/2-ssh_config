@@ -18,7 +18,11 @@
 # Host *
 #   ForwardAgent no
 #   ForwardX11 no
+    IgnoreUnknown AddKeysToAgent,UseKeychain
+    AddKeysToAgent yes
+    UseKeychain yes
     PasswordAuthentication no
+    PremitRootLogin yes
 #   HostbasedAuthentication no
 #   GSSAPIAuthentication no
 #   GSSAPIDelegateCredentials no
@@ -27,8 +31,8 @@
 #   AddressFamily any
 #   ConnectTimeout 0
 #   StrictHostKeyChecking ask
-#   IdentityFile ~/.ssh/id_rsa
-#   IdentityFile ~/.ssh/id_dsa
+    IdentityFile ~/.ssh/id_rsa
+    IdentityFile ~/.ssh/school
 #   IdentityFile ~/.ssh/id_ecdsa
 #   IdentityFile ~/.ssh/id_ed25519
 #   Port 22
