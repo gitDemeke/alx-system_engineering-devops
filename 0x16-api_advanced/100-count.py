@@ -1,90 +1,63 @@
 #!/usr/bin/python3
-"""script for parsing web data from an api
-    DISCLAIMER: THIS PROBABLY SHOULDN'T BE DONE RECURSIVELY
-    but we had to for school :P
-"""
-import json
-import requests
-import sys
+""" Module for storing the count_words function. """
+from requests import get
 
 
-def get_hot_posts(subreddit, hot_list=[]):
-    """api call to reddit to get the number of subscribers
+def count_words(subreddit, word_list, word_count=[], page_after=None):
     """
-    base_url = 'https://www.reddit.com/r/{}/top.json'.format(
-        subreddit
-    )
-    headers = {
-        'User-Agent':
-        'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) \
-        Gecko/20100401 Firefox/3.6.3 (FM Scene 4.6.1)'
-    }
-    if len(hot_list) == 0:
-        # grab initial list
-        url = base_url
+    Prints the count of the given words present in the title of the
+    subreddit's hottest articles.
+    """
+    headers = {'User-Agent': 'HolbertonSchool'}
+
+    word_list = [word.lower() for word in word_list]
+
+    if bool(word_count) is False:
+        for word in word_list:
+            word_count.append(0)
+
+    if page_after is None:
+        url = 'https://www.reddit.com/r/{}/hot.json'.format(subreddit)
+        r = get(url, headers=headers, allow_redirects=False)
+        if r.status_code == 200:
+            for child in r.json()['data']['children']:
+                i = 0
+                for i in range(len(word_list)):
+                    for word in [w for w in child['data']['title'].split()]:
+                        word = word.lower()
+                        if word_list[i] == word:
+                            word_count[i] += 1
+                    i += 1
+
+            if r.json()['data']['after'] is not None:
+                count_words(subreddit, word_list,
+                            word_count, r.json()['data']['after'])
     else:
-        # grab next pagination after last obj in hot_list
-        url = base_url + '?after={}_{}'.format(
-            hot_list[-1].get('kind'),
-            hot_list[-1].get('data').get('id')
-        )
-    response = requests.get(url, headers=headers)
-    resp = json.loads(response.text)
-    try:
-        data = resp.get('data')
-        children = data.get('children')
-    except:
-        return None
-    if children is None or data is None or len(children) < 1:
-        return hot_list
-    hot_list.extend(children)
-    return get_hot_posts(subreddit, hot_list)
+        url = ('https://www.reddit.com/r/{}/hot.json?after={}'
+               .format(subreddit,
+                       page_after))
+        r = get(url, headers=headers, allow_redirects=False)
 
+        if r.status_code == 200:
+            for child in r.json()['data']['children']:
+                i = 0
+                for i in range(len(word_list)):
+                    for word in [w for w in child['data']['title'].split()]:
+                        word = word.lower()
+                        if word_list[i] == word:
+                            word_count[i] += 1
+                    i += 1
+            if r.json()['data']['after'] is not None:
+                count_words(subreddit, word_list,
+                            word_count, r.json()['data']['after'])
+            else:
+                dicto = {}
+                for key_word in list(set(word_list)):
+                    i = word_list.index(key_word)
+                    if word_count[i] != 0:
+                        dicto[word_list[i]] = (word_count[i] *
+                                               word_list.count(word_list[i]))
 
-def count_words(subreddit, wordlist):
-    """count words in titles of hot posts for subreddit
-    """
-    posts = get_hot_posts(subreddit)
-    if posts is None:
-        print(end="")
-        return
-    words = gather_word_info(posts, wordlist)
-    sorted_list = [(key, val) for key, val in words.items()]
-    sorted_list = sorted(sorted_list, key=lambda tup: tup[1], reverse=True)
-    [print("{}: {}".format(key, val)) for (key, val) in sorted_list if val > 0]
-
-
-def gather_word_info(hot_posts, wordlist,
-                     posts_len=None,
-                     counter=0,
-                     words_info=None):
-    """does the recursion to grab word info from wordlist and posts
-    """
-    if hot_posts is None:
-        return
-    # generate defaults
-    if posts_len is None:
-        posts_len = len(hot_posts)
-    if words_info is None:
-        words_info = {key: 0 for key in wordlist}
-    # base case
-    if counter == posts_len - 1:
-        return words_info
-
-    # parse this title and move to next
-    data = hot_posts[counter].get('data')
-    if data is None:
-        return words_info
-    title = data.get('title')
-    if title is None:
-        return words_info
-    # im sorry im not doing recursion for text parsing that's rediculous
-    for word in title.split(' '):
-        word = word.lower()
-        if word in wordlist:
-            words_info[word] += 1
-    counter += 1
-    return gather_word_info(
-        hot_posts, wordlist, posts_len,
-        counter, words_info
-    )
+                for key, value in sorted(dicto.items(),
+                                         key=lambda x: (-x[1], x[0])):
+                    print('{}: {}'.format(key, value))
