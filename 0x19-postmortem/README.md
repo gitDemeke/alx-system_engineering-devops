@@ -1,65 +1,20 @@
-# Postmortem
 
-Upon the release of Holberton School's System Engineering & DevOps project 0x19,
-approximately 00:07 Pacific Standard Time (PST), an outage occurred on an isolated
-Ubuntu 14.04 container running an Apache web server. GET requests on the server led to
-`500 Internal Server Error`'s, when the expected response was an HTML file defining a
-simple Holberton WordPress site.
 
-## Debugging Process
-
-Bug debugger Brennan (BDB... as in my actual initials... made that up on the spot, pretty
-good, huh?) encountered the issue upon opening the project and being, well, instructed to
-address it, roughly 19:20 PST. He promptly proceeded to undergo solving the problem.
-
-1. Checked running processes using `ps aux`. Two `apache2` processes - `root` and `www-data` -
-were properly running.
-
-2. Looked in the `sites-available` folder of the `/etc/apache2/` directory. Determined that
-the web server was serving content located in `/var/www/html/`.
-
-3. In one terminal, ran `strace` on the PID of the `root` Apache process. In another, curled
-the server. Expected great things... only to be disappointed. `strace` gave no useful
-information.
-
-4. Repeated step 3, except on the PID of the `www-data` process. Kept expectations lower this
-time... but was rewarded! `strace` revelead an `-1 ENOENT (No such file or directory)` error
-occurring upon an attempt to access the file `/var/www/html/wp-includes/class-wp-locale.phpp`.
-
-5. Looked through files in the `/var/www/html/` directory one-by-one, using Vim pattern
-matching to try and locate the erroneous `.phpp` file extension. Located it in the
-`wp-settings.php` file. (Line 137, `require_once( ABSPATH . WPINC . '/class-wp-locale.php' );`).
-
-6. Removed the trailing `p` from the line.
-
-7. Tested another `curl` on the server. 200 A-ok!
-
-8. Wrote a Puppet manifest to automate fixing of the error.
-
-## Summation
-
-In short, a typo. Gotta love'em. In full, the WordPress app was encountering a critical
-error in `wp-settings.php` when tyring to load the file `class-wp-locale.phpp`. The correct
-file name, located in the `wp-content` directory of the application folder, was
-`class-wp-locale.php`.
-
-Patch involved a simple fix on the typo, removing the trailing `p`.
-
-## Prevention
-
-This outage was not a web server error, but an application error. To prevent such outages
-moving forward, please keep the following in mind.
-
-* Test! Test test test. Test the application before deploying. This error would have arisen
-and could have been addressed earlier had the app been tested.
-
-* Status monitoring. Enable some uptime-monitoring service such as
-[UptimeRobot](./https://uptimerobot.com/) to alert instantly upon outage of the website.
-
-Note that in response to this error, I wrote a Puppet manifest
-[0-strace_is_your_friend.pp](https://github.com/bdbaraban/holberton-system_engineering-devops/blob/master/0x17-web_stack_debugging_3/0-strace_is_your_friend.pp)
-to automate fixing of any such identitical errors should they occur in the future. The manifest
-replaces any `phpp` extensions in the file `/var/www/html/wp-settings.php` with `php`.
-
-But of course, it will never occur again, because we're programmers, and we never make
-errors! :wink:
+Issue Summary
+We had just released a new feature to our recently launched java on Rails site that we had our first intake of users complaining about the site. 5 minutes after we performed a feature update, we started receiving emails from our users talking about "they can't sign in or sign up to our platform". It was quite surprising to us because we knew it worked on our machines and it worked before. About 80 of such emails came to our inbox. It was an avalanche of emails. Knowing how hard it can be to attract and keep users, we couldn't afford to lose 80 of our users in that way and decided to take a closer look at the problem. We cloned our site's repository from GitBug, followed the installation instructions on the README and to our surprise the site couldn't startup. It wasn't long before we realized that the cause of the problem was failing to update the requirements for our project. The site was malfunctioning from 10:45 AM GMT+3 to 4:22 PM GMT+3.
+Timeline
+05-04-2023 9:45 AM GMT+3 - A customer complained that they couldn't sign in to the site.
+05-04-2023 10:20 AM GMT+3 - one of our backend developers, experienced the same issues our customers reported.
+05-04-2023 12:35 PM GMT+3 - We investigated the controllers and the views for inconsistencies.
+05-04-2023 1:35 PM GMT+3 - We assumed the script (one of our site's dependencies) being used was either at fault or used incorrectly because the error message on the site showed that the script was raising an error over an invalid hash.
+05-04-2023 1:55 PM GMT+3 - We checked that the views might not be binding the form fields to the right model fields, which later turned out to be false.
+05-04-2023 02:25 PM GMT+3 - We were misled by thinking that our controllers might be creating a different hash for a valid password of the site's admin.
+05-04-2024 02:50 PM GMT+3 - thought the issue might have been that the password was not properly hashed.
+05-04-2023 03:15 PM GMT+3 - The incident was escalated to the backend development team.
+05-02-2022 04:20 AM GMT+3 - The incident was resolved by updating the requirements (the bcrypt gem version) for the backend server.
+Root Cause And Resolution
+The version of the bcrypt gem we used was outdated. It was raising an error over a hash that was clearly valid and matched what was stored in the database. It could be that the hash we were creating was not supported by the version of bcrypt we had installed. Winus fixed the issue by manually updating the version of bcrypt in the Gemfile.lock file to a more recent version and reinstalling the required gems, and it worked like a charm.
+Corrective And Preventative Measures
+Setup a continuous integration pipeline to run a build on each pull request branch. This would ensure that builds are passing in the pull request branch before it is merged with the deployment branch.
+Setup a monitoring system for the database and application servers to keep track of any issue that may occur.
+Develop tests that need to be passed for each new feature and those tests should be passing before they are merged with the deployment branch.
